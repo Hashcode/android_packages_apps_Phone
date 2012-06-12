@@ -243,8 +243,8 @@ public class PhoneUtils {
         if (DBG) log("answerCall()...");
 
         // If the ringer is currently ringing and/or vibrating, stop it
-        // right now (before actually answering the call.)
-        PhoneApp.getInstance().getRinger().stopRing();
+        // right now and prevent new rings (before actually answering the call.)
+        PhoneApp.getInstance().notifier.silenceRinger();
 
         boolean answered = false;
         PhoneApp app = PhoneApp.getInstance();
@@ -2436,6 +2436,15 @@ public class PhoneUtils {
             if (phone != null) return phone;
         }
         return cm.getDefaultPhone();
+    }
+
+    public static Phone getGsmPhone(CallManager cm) {
+        for (Phone phone: cm.getAllPhones()) {
+            if (phone.getPhoneType() == Phone.PHONE_TYPE_GSM) {
+                return phone;
+            }
+        }
+        return null;
     }
 
     public static Phone getSipPhoneFromUri(CallManager cm, String target) {
